@@ -25,6 +25,7 @@ import os
 
 from PyQt4 import QtGui, uic
 from PyQt4.QtCore import pyqtSignal
+from gcdxml import GCDXML
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'gcd_viewer_dockwidget_base.ui'))
@@ -43,8 +44,20 @@ class GCDViewerDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+        self.btnLoad.clicked.connect(self.raster_file_browser)
+        #         self.xmlLocation
+        #         self.treeView =
+
+    def raster_file_browser(self):
+        filename = QtGui.QFileDialog.getOpenFileName(self, "Open GCD file", "", "GCD File (*.gcd);;All files (*)")
+        filename = os.path.splitext(str(filename))[0]+".gcd"
+        self.xmlLocation.setText(filename)
+        self.gcdxml = GCDXML(filename)
+        self.recalc_state()    
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
         event.accept()
 
+    def recalc_state(self):
+        print "recalc state"
