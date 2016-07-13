@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<tree xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema.xsd">
+  <node>
+    <label>GCD</label>
+    <children collapsed="false">
+      <repeater>
+        <label>DEM Surveys</label>
+        <xpath>/ProjectDS/Project/DEMSurvey</xpath>
+        <node>
+          <label xpath="Name"/>
+          <children collapsed="true">
+            <repeater>
+              <label>Associated Surfaces</label>
+              <xpath>AssociatedSurface</xpath>
+              <node>
+                <label xpath="Name"/>
+                <type>ASS_SRF</type>
+                <entity>
+                  <type>raster</type>
+                  <xpath>Source</xpath>
+                  <symbology>BlueToRed</symbology>
+                </entity>
+              </node>
+            </repeater>
+            <repeater>
+              <label>Error Surfaces</label>
+              <xpath>ErrorSurface</xpath>
+              <node>
+                <label xpath="Name"/>
+                <type>ERR_SRF</type>
+                <entity>
+                  <type>raster</type>
+                  <xpath>Source</xpath>
+                  <symbology>RedToGreen</symbology>
+                </entity>
+              </node>
+            </repeater>
+          </children>
+        </node>
+      </repeater>
+    </children>
+  </node>
+
+
+  <symbologies>
+    <symbology id="BlueToRed">
+      <ramp>
+        <startcolour>blue</startcolour>
+        <endcolour>red</endcolour>
+        <type>stretch</type>
+      </ramp>
+    </symbology>
+    <symbology id="RedToGreen">
+      <ramp>
+        <startcolour>red</startcolour>
+        <endcolour>green</endcolour>
+        <type>stretch</type>
+      </ramp>
+    </symbology>
+  </symbologies>
+
+</tree>
