@@ -6,7 +6,7 @@
     <children collapsed="false">
       <repeater>
         <label>DEM Surveys</label>
-        <xpath>/ProjectDS/Project/DEMSurvey</xpath>
+        <xpath>/Project/DEMSurvey</xpath>
         <node>
           <label xpath="Name"/>
           <children collapsed="true">
