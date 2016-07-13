@@ -13,7 +13,7 @@ from xml.dom import minidom
 
 class GCDXML():
     
-    def __init__(self, xmlPath, parent = None):
+    def __init__(self, xmlPath, treeControl, parent = None):
         """Constructor"""
         if xmlPath is None or not os.path.isfile(xmlPath):
             msg = "..."
@@ -24,18 +24,32 @@ class GCDXML():
             q.setWindowIcon(i)
             q.exec_()
         else:
-            self.domtree = QTreeView(self)
-            self.view.setDragEnabled(True)
+            self.tree = treeControl
+            self.model = QStandardItemModel()
+            self.rootItem = self.model.invisibleRootItem()
+            self.tree.setModel(self.model)
+            self.tree.setDragEnabled(True)
             self.Load(xmlPath)
 
     def Load(self, path):
         xmldoc = minidom.parse(path)
-
-        for node in xmldoc.getElementsByTagName('DEMSurvey'):
-            itemName = node.getElementsByTagName('Name')
-            print(self.getNodeText(itemName[0]))
         
+        for demSurvey in xmldoc.getElementsByTagName('DEMSurvey'):
+            nameNode = demSurvey.getElementsByTagName('Name')[0]
+            demSurveyitem = self.add_item(self.rootItem, self.getNodeText(nameNode))
+            
+            for assocSurface in demSurvey.getElementsByTagName('AssociatedSurface'):
+                if len(assocSurface.getElementsByTagName('Name')) > 0:
+                    name = self.getNodeText(assocSurface.getElementsByTagName('Name')[0])
+                    assocSurfaceItem = self.add_item(demSurveyitem, name)
+            
         print "booya"
+        
+    def add_item(self, parent, text):
+        if len(text) > 0: 
+            item = QStandardItem(text)
+            parent.appendRow(item)
+            return item
         
     def getNodeText(self, node):
         nodelist = node.childNodes

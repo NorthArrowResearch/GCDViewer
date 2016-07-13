@@ -52,7 +52,7 @@ class GCDViewerDockWidget(QtGui.QDockWidget, FORM_CLASS):
         filename = QtGui.QFileDialog.getOpenFileName(self, "Open GCD file", "", "GCD File (*.gcd);;All files (*)")
         filename = os.path.splitext(str(filename))[0]+".gcd"
         self.xmlLocation.setText(filename)
-        self.gcdxml = GCDXML(filename)
+        self.gcdxml = GCDXML(filename, self.treeView)
         self.recalc_state()    
 
     def closeEvent(self, event):
