@@ -5,7 +5,7 @@ This class is responsible for loading and maintining the GCD project file
 
 """
 
-import os
+import os, re
 from PyQt4 import QtGui
 from PyQt4.QtGui import QStandardItem, QMenu, QStandardItemModel, QTreeView, QMessageBox, QIcon, QPixmap
 from PyQt4.QtCore import *
@@ -38,15 +38,15 @@ class GCDXML():
 
             # This is the GCD projet viewer so no harm in hardcoding this for now.
             self.xmlTreePath = os.path.join(os.path.dirname(__file__), "Resources/XML/gcd_tree.xml")
-            self.xmlProjPath = xmlPath
-
+            self.xmlProjfile = xmlPath
+            self.xmlProjDir = os.path.dirname(xmlPath)
             self.namespace = "{http://tempuri.org/ProjectDS.xsd}"
 
             # Load the tree file (the rules we use to build the tree)
             self.xmlTemplateDoc = ET.parse(self.xmlTreePath)
             # Load the GCD Project (the raw data that will be used to populate the tree)
             # instead of ET.fromstring(xml)
-            with open(self.xmlProjPath, 'r') as myfile:
+            with open(self.xmlProjfile, 'r') as myfile:
                 data=myfile.read().replace('\n', '')
                 it = ET.iterparse(StringIO(data))
                 for _, el in it:
@@ -57,42 +57,52 @@ class GCDXML():
             # Set up the first domino for the recursion            
             self.LoadNode(None, self.xmlTemplateDoc.find("node"), self.xmlProjectDoc)
             self.tree.expandToDepth(5)
-            
-    def add_item(self, parent, text, meta):
-        """ Add an item to the tree """ 
-        if len(text) > 0: 
-            item = QStandardItem(text)
-            if meta is not None:
-                print meta
-            parent.appendRow(item)
-            parent.setExpanded(True)
-            return item
                     
                         
     def LoadNode(self, tnParent, templateNode, projNode):
         """ Load a single node """
-        
+        data = {}
         label = self.getLabel(templateNode, projNode)
-
-        newTreeItem = QStandardItem(label)
-        if tnParent is None:
-            self.treeRoot.appendRow(newTreeItem)
-        else:
-            tnParent = tnParent.appendRow(newTreeItem)
 
         # Detect if this is an XML node element and reset the root Project node to this.
         entityType = templateNode.find('entity/type')
         entityXPath = templateNode.find('entity/xpath')
         newProjNode = projNode
-        if (entityXPath):
-            newProjNode = projNode.find(entityXPath)        
-                
+
+        if entityXPath is not None:
+            newProjNode = projNode.find(entityXPath.text)        
+        
+        # This node might be a leaf. If so we need to get some meta dat
+        if entityType is not None:
+            filepathNode = projNode.find(entityXPath.text)
+            if filepathNode is not None: 
+                # normalize the slashes
+                filepath = re.sub('\r?[\\\/]', os.path.sep, filepathNode.text, 3) 
+                # make it an absolute path
+                filepath = os.path.join(self.xmlProjDir, filepath)
+                data['filepath'] = filepath
+            if entityXPath is not None:
+                data['xpath'] = entityXPath.text
+            symbologyNode = templateNode.find('entity/symbology')
+            if symbologyNode is not None: 
+                data['symbology'] = symbologyNode.text
+            
+        # Add the leaf to the tree
+        newTreeItem = QStandardItem(label)
+
+        if tnParent is None:
+            self.treeRoot.appendRow(newTreeItem)
+        else:
+            tnParent = tnParent.appendRow(newTreeItem)        
+        
         # Just a regular node with children
         for xChild in templateNode.findall("children/node"):
             self.LoadNode(newTreeItem, xChild, newProjNode)
         for xRepeater in templateNode.findall("children/repeater"):
             self.LoadRepeater(newTreeItem, xRepeater, newProjNode)
 
+        data['group_layers'] = self.getTreeAncestry(newTreeItem)
+        newTreeItem.setData(data)
 
     def LoadRepeater(self, tnParent, templateNode, projNode):
         """ Repeater is for using an XPAth in the project file for repeating elements """
@@ -122,28 +132,31 @@ class GCDXML():
         for xProjChild in xNewProjList:
             self.LoadNode(newTreeItem, xPatternNode, xProjChild)    
     
+    def getTreeAncestry(self, item):
+        ancestry = []
+        parent = item.parent()
+        while parent is not None:
+            ancestry.append(parent.text())
+            parent = parent.parent()
+        ancestry.reverse()
+        return ancestry
+    
+    
     def item_doubleClicked(self, index):
         item = self.tree.selectedIndexes()[0]
-        print "DOUBLE CLICKED" , item.model().itemFromIndex(index).text()
         self.addToMap( item.model().itemFromIndex(index))
     
+    
+
     def openMenu(self, position):
-        indexes = self.tree.selectedIndexes()
-        if len(indexes) > 0:
-            level = 0
-            index = indexes[0]
-            while index.parent().isValid():
-                index = index.parent()
-                level += 1
-        
+        """ Handle the contextual menu """
+        index = self.tree.selectedIndexes()[0]
+        item = index.model().itemFromIndex(index)
         menu = QMenu()
-        if level == 0:
-            menu.addAction("Edit person")
-        elif level == 1:
-            menu.addAction("Edit object/container")
-        elif level == 2:
-            menu.addAction("Edit object")
-         
+        
+        receiver = lambda item=item: self.addToMap(item)
+        menu.addAction("Add to Map", receiver)
+
         menu.exec_(self.tree.viewport().mapToGlobal(position))
     
     def getLabel(self, templateNode, projNode):
@@ -162,4 +175,6 @@ class GCDXML():
         return label
     
     def addToMap(self, item):
-        print "ADDING TO MAP::", item.text()
+        print "ADDING TO MAP::", item.data()
+        
+        
