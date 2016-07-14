@@ -43,7 +43,7 @@ class GCDXML():
             self.xmlProjfile = xmlPath
             self.xmlProjDir = os.path.dirname(xmlPath)
             self.namespace = "{http://tempuri.org/ProjectDS.xsd}"
-
+            
             # Load the tree file (the rules we use to build the tree)
             self.xmlTemplateDoc = ET.parse(self.xmlTreePath)
             # Load the GCD Project (the raw data that will be used to populate the tree)
@@ -55,8 +55,12 @@ class GCDXML():
                     if '}' in el.tag:
                         el.tag = el.tag.split('}', 1)[1]  # strip all namespaces
                 self.xmlProjectDoc = it.root
-            
-            # Set up the first domino for the recursion            
+                        
+            # Set up the first domino for the recursion         
+            projectName = self.xmlProjectDoc.find("Project/Name")
+            if projectName is not None:
+                self.treeRoot.setText(projectName.text)
+   
             self.LoadNode(None, self.xmlTemplateDoc.find("node"), self.xmlProjectDoc)
             self.tree.expandToDepth(5)
                     

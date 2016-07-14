@@ -3,7 +3,7 @@ import os.path
 
 from PyQt4 import QtGui, uic
 from PyQt4.QtCore import *
-
+from qgis.utils import iface
 from qgis.core import QgsMapLayer, QgsRasterLayer, QgsMapLayerRegistry,QgsProject
 
 from symbology import RasterSymbolizer
@@ -28,8 +28,9 @@ def AddRasterLayer(theRaster):
     # Loop over all the parent group layers for this raster
     # ensuring they are in the tree in correct, nested order
     parentGroup = None
-    for aGroup in theRaster.data()["group_layers"]:
-        parentGroup = AddGroup(aGroup, parentGroup)
+    if len(theRaster.data()) > 0:
+        for aGroup in theRaster.data()["group_layers"]:
+            parentGroup = AddGroup(aGroup, parentGroup)
 
     assert parentGroup, "All rasters should be nested and so parentGroup should be instantiated by now"
 
@@ -50,8 +51,10 @@ def AddRasterLayer(theRaster):
                 rHillshade = QgsRasterLayer(hillshadePath, "Hillshade")
                 QgsMapLayerRegistry.instance().addMapLayer(rHillshade, False)
                 lHillshade = parentGroup.addLayer(rHillshade)
-                legendInterface().setLayerExpanded(lHillshade, False)
+                legend = iface.legendInterface()
+                legend.setLayerExpanded(rHillshade, False)
 
     # if the layer already exists trigger a refresh
     else:
-        QgsMapLayerRegistry.instance().mapLayersByName(theRaster.text()).triggerRepaint()
+        print "REFRESJH"
+        QgsMapLayerRegistry.instance().mapLayersByName(theRaster.text())[0].triggerRepaint()
