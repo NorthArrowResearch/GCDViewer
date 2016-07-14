@@ -1,4 +1,5 @@
 import os
+import os.path
 
 from PyQt4 import QtGui, uic
 from PyQt4.QtCore import *
@@ -37,10 +38,20 @@ def AddRasterLayer(theRaster):
         rOutput = QgsRasterLayer(theRaster.data()["filepath"], theRaster.text())
         QgsMapLayerRegistry.instance().addMapLayer(rOutput, False)
         parentGroup.addLayer(rOutput)
-
+        
         # call Konrad's symbology method here using data()["symbology"]
         RasterSymbolizer(rOutput).render_GCD(theRaster.data()["symbology"])
 
+        if theRaster.data()["symbology"].lower() == "dem":
+            demPath, demExtension = os.path.splitext( theRaster.data()["filepath"])
+            hillshadePath = demPath + "HS" + demExtension
+            
+            if os.path.isfile(hillshadePath):
+                rHillshade = QgsRasterLayer(hillshadePath, "Hillshade")
+                QgsMapLayerRegistry.instance().addMapLayer(rHillshade, False)
+                lHillshade = parentGroup.addLayer(rHillshade)
+                legendInterface().setLayerExpanded(lHillshade, False)
+
     # if the layer already exists trigger a refresh
     else:
-        thisLayer.triggerRepaint()
+        QgsMapLayerRegistry.instance().mapLayersByName(theRaster.text()).triggerRepaint()
