@@ -38,6 +38,7 @@
     <Compile Include="plugin_upload.py" />
     <Compile Include="resources.py" />
     <Compile Include="shim.py" />
+    <Compile Include="symbology.py" />
     <Compile Include="test\qgis_interface.py" />
     <Compile Include="test\test_gcd_viewer_dockwidget.py" />
     <Compile Include="test\test_init.py" />
