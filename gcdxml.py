@@ -12,6 +12,8 @@ from PyQt4.QtCore import *
 from StringIO import StringIO
 import xml.etree.ElementTree as ET
 
+from toc_management import *
+
 class GCDXML():
     
     def __init__(self, xmlPath, treeControl, parent = None):
@@ -77,7 +79,7 @@ class GCDXML():
             filepathNode = projNode.find(entityXPath.text)
             if filepathNode is not None: 
                 # normalize the slashes
-                filepath = re.sub('\r?[\\\/]', os.path.sep, filepathNode.text, 3) 
+                filepath = filepathNode.text # re.sub('\r?[\\\/]\\', os.path.sep, filepathNode.text, 3) 
                 # make it an absolute path
                 filepath = os.path.join(self.xmlProjDir, filepath)
                 data['filepath'] = filepath
@@ -177,4 +179,5 @@ class GCDXML():
     def addToMap(self, item):
         print "ADDING TO MAP::", item.data()
         
+        AddRasterLayer(item)
         
