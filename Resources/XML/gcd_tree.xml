@@ -32,7 +32,7 @@
                 <entity>
                   <type>raster</type>
                   <xpath>Source</xpath>
-                  <symbology>RedToGreen</symbology>
+                  <symbology>DEM</symbology>
                 </entity>
               </node>
             </repeater>
