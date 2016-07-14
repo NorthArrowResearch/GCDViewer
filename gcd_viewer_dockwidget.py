@@ -26,6 +26,7 @@ import os
 from PyQt4 import QtGui, uic
 from PyQt4.QtCore import pyqtSignal
 from gcdxml import GCDXML
+from gcd_results_form import ResultsForm
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'gcd_viewer_dockwidget_base.ui'))
@@ -35,7 +36,7 @@ class GCDViewerDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
     closingPlugin = pyqtSignal()
 
-    def __init__(self, parent=None):
+    def __init__(self, iface, parent=None):
         """Constructor."""
         super(GCDViewerDockWidget, self).__init__(parent)
         # Set up the user interface from Designer.
@@ -44,7 +45,9 @@ class GCDViewerDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+        self.resultsDialog = ResultsForm(iface)
         self.btnLoad.clicked.connect(self.raster_file_browser)
+        self.btn_results.clicked.connect(self.resultsEvent)
         #         self.xmlLocation
         #         self.treeView =
 
@@ -58,6 +61,9 @@ class GCDViewerDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def closeEvent(self, event):
         self.closingPlugin.emit()
         event.accept()
+
+    def resultsEvent(self, event):
+        self.resultsDialog.exec_()
 
     def recalc_state(self):
         print "recalc state"

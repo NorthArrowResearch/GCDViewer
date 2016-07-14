@@ -12,7 +12,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>140</width>
+    <width>264</width>
     <height>400</height>
    </size>
   </property>
@@ -30,6 +30,20 @@
        <widget class="QPushButton" name="btnLoad">
         <property name="text">
          <string>Browse...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="btn_reload">
+        <property name="text">
+         <string>rld</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="btn_results">
+        <property name="text">
+         <string>res</string>
         </property>
        </widget>
       </item>
