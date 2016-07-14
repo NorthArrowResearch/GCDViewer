@@ -79,7 +79,7 @@ class GCDXML():
             filepathNode = projNode.find(entityXPath.text)
             if filepathNode is not None: 
                 # normalize the slashes
-                filepath = filepathNode.text # re.sub('\r?[\\\/]\\', os.path.sep, filepathNode.text, 3) 
+                filepath = re.sub('[\\\/]+', os.path.sep, filepathNode.text) 
                 # make it an absolute path
                 filepath = os.path.join(self.xmlProjDir, filepath)
                 data['filepath'] = filepath
