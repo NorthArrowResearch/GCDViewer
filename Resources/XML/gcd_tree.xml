@@ -36,6 +36,15 @@
                 </entity>
               </node>
             </repeater>
+            <node>
+              <label xpath="Name"/>
+              <type>DEM</type>
+              <entity>
+                <type>raster</type>
+                <xpath>Source</xpath>
+                <symbology>DEM</symbology>
+              </entity>
+            </node>
           </children>
         </node>
       </repeater>

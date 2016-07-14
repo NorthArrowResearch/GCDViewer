@@ -44,7 +44,7 @@
         <xs:element ref="entity" minOccurs="0"/>
         <xs:element name="children" minOccurs="0">
           <xs:complexType>
-            <xs:choice>
+            <xs:choice maxOccurs="unbounded">
               <xs:element ref="node" minOccurs="1" maxOccurs="unbounded"/>
               <xs:element ref="repeater" minOccurs="1" maxOccurs="unbounded"/>
             </xs:choice>
