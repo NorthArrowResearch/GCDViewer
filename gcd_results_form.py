@@ -21,18 +21,17 @@ class ResultsForm(QtGui.QDialog, FORM_CLASS):
         self.setup_table()
 
     def setup_table(self):
-        self.resultsTable.setHorizontalHeaderLabels(["Attribute","Raw","Thresholded","","Error Volume","%Error"])
-        self.resultsTable.setVerticalHeaderLabels(["Attribute",
-                                                   "AREAL:","Total Area of Erosion (m^2)",
+        self.resultsTable.setHorizontalHeaderLabels(["Raw","Thresholded","","Error Volume","%Error"])
+        self.resultsTable.setVerticalHeaderLabels(["AREAL:","Total Area of Erosion (m^2)",
                                                    "Total Area of Deposition (m^2", "Total Area of Detectable Change (m^2)"
                                                    "Total Area of Interest (m^2)", "Percent of Area of Interest with Detectable Change"
                                                    "VOLUMETRIC:", "Total Volume of Erosion (m^3)",
                                                    "Total Volume of Deposition (m^3)", "Total Volume of Difference (m^3)",
                                                    "Total Net Volume Difference (m^3)",
-                                                   "VERTICAL AVERAGES", "Average Depth of Erosion (m)", "Average Depth of Deposition",
+                                                   "VERTICAL AVERAGES:", "Average Depth of Erosion (m)", "Average Depth of Deposition",
                                                    "Average Total Thickness of Difference (m) for Area of Interest",
                                                    "Average Net Thickness of Difference (m) for Area of Interest",
                                                    "Average Total Thickness of Difference (m) for Area with Detectable Change",
                                                    "Average Net Thickness of Difference (m) for Area with Detectable Change",
-                                                   "PERCENTAGES (BY VOLUME)","Percent Erosion","Percent Deposition",
+                                                   "PERCENTAGES (BY VOLUME):","Percent Erosion","Percent Deposition",
                                                    "Percent Imbalance (departure from equilibrium)", "Net to Total Volume Ratio"])
