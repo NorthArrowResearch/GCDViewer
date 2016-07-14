@@ -5,6 +5,8 @@ from PyQt4.QtCore import *
 
 from qgis.core import QgsMapLayer, QgsRasterLayer, QgsMapLayerRegistry,QgsProject
 
+from symbology import RasterSymbolizer
+
 # http://www.lutraconsulting.co.uk/blog/2014/07/25/qgis-layer-tree-api-part-2/
 
 def AddGroup(sGroupName, parentGroup):
@@ -37,6 +39,7 @@ def AddRasterLayer(theRaster):
         parentGroup.addLayer(rOutput)
 
         # call Konrad's symbology method here using data()["symbology"]
+        RasterSymbolizer(rOutput).render_GCD(theRaster.data()["symbology"])
 
     # if the layer already exists trigger a refresh
     else:
