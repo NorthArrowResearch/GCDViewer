@@ -7,11 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>1013</width>
-    <height>685</height>
+    <height>742</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>GCD Results</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -85,12 +88,38 @@
        </item>
        <item>
         <widget class="QTableWidget" name="resultsTable">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
          <property name="rowCount">
-          <number>21</number>
+          <number>23</number>
          </property>
          <property name="columnCount">
           <number>5</number>
          </property>
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>125</number>
+         </attribute>
+         <attribute name="horizontalHeaderHighlightSections">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="horizontalHeaderMinimumSectionSize">
+          <number>45</number>
+         </attribute>
+         <attribute name="verticalHeaderDefaultSectionSize">
+          <number>22</number>
+         </attribute>
+         <attribute name="verticalHeaderHighlightSections">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="verticalHeaderMinimumSectionSize">
+          <number>22</number>
+         </attribute>
+         <row/>
+         <row/>
          <row/>
          <row/>
          <row/>
